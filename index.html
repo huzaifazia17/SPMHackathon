@@ -20,13 +20,25 @@
         <input type="text" id="cocktailId">
         <button onclick="lookupCocktailById()">Lookup</button>
     </div>
+
+    <div>
+        <label for="ingredient-name">Search ingredients by name: </label>
+        <input type="text" id="ingredient-name">
+        <button onclick="searchIngredientByName()">Lookup</button>
+        <ul id="ingredient-results"></ul>
+
+    </div>
     <div>
         <button onclick="lookupRandomCocktail()">Lookup a random cocktail</button>
     </div>
+
+
+
+
     <div id="result"></div>
 
     <script src="./script.js" type="text/javascript"></script>
-   
+
 </body>
 
 </html>

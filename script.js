@@ -44,6 +44,16 @@ async function randomCocktail() {
     displayResults(data);
 }
 
+
+async function searchIngredientByName() {
+    const ingredientName = document.getElementById("ingredient-name").value;
+    const response = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?i=${ingredientName}`);
+    const data = await response.json();
+    const resultsList = document.getElementById("ingredient-results");
+
+
+}
+
 //function for displaying results of queries
 function displayResults(data) {
 
@@ -61,5 +71,17 @@ function displayResults(data) {
     } else {
         //if no results found, print error
         resultDiv.innerHTML = '<p>No results found.</p>';
+    }
+
+    if (data.ingredients) {
+        data.ingredients.forEach(ingredient => {
+            const li = document.createElement("li");
+            li.innerText = `${ingredient.strIngredient}: ${ingredient.strDescription || 'No description available'}`;
+            resultsList.appendChild(li);
+        });
+    } else {
+        const li = document.createElement("li");
+        li.innerText = 'No ingredients found';
+        resultsList.appendChild(li);
     }
 }
