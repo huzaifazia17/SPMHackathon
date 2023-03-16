@@ -1,44 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CocktailDB API Example</title>
-    <link href="./style.css" rel="stylesheet" type="text/css" />
+    <title>Cocktail API</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
-    <h1>CocktailDB API Example</h1>
-    <div>
-        <label for="cocktailName">Search cocktail by name:</label>
-        <input type="text" id="cocktailName">
-        <button onclick="searchCocktailByName()">Search</button>
-    </div>
-    <div>
-        <label for="cocktailId">Lookup full cocktail details by ID:</label>
-        <input type="text" id="cocktailId">
-        <button onclick="lookupCocktailById()">Lookup</button>
-    </div>
+    <h1>Cocktail API</h1>
 
-    <div>
-        <label for="ingredient-name">Search ingredients by name: </label>
-        <input type="text" id="ingredient-name">
-        <button onclick="searchIngredientByName()">Lookup</button>
-        <ul id="ingredient-results"></ul>
+    <h2>Search cocktail by name</h2>
+    <form>
+        <label for="searchCocktail">Enter cocktail name:</label>
+        <input type="text" id="searchCocktail" name="searchCocktail">
+        <button type="button" onclick="searchCocktail()">Search</button>
+    </form>
 
-    </div>
-    <div>
-        <button onclick="lookupRandomCocktail()">Lookup a random cocktail</button>
-    </div>
+    <h2>Search ingredients by name</h2>
+    <form>
+        <label for="searchIngredient">Enter ingredient name:</label>
+        <input type="text" id="searchIngredient" name="searchIngredient">
+        <button type="button" onclick="searchIngredient()">Search</button>
+    </form>
 
+    <h2>Lookup full cocktail details by ID</h2>
+    <form>
+        <label for="lookupCocktail">Enter cocktail ID:</label>
+        <input type="text" id="lookupCocktail" name="lookupCocktail">
+        <button type="button" onclick="lookupCocktail()">Lookup</button>
+    </form>
 
+    <h2>Lookup a random cocktail</h2>
+    <button type="button" onclick="randomCocktail()">Get Random Cocktail</button>
 
+    <h2>Search by ingredient</h2>
+    <form>
+        <label for="searchByIngredient">Enter ingredient name:</label>
+        <input type="text" id="searchByIngredient" name="searchByIngredient">
+        <button type="button" onclick="searchByIngredient()">Search</button>
+    </form>
 
     <div id="result"></div>
 
-    <script src="./script.js" type="text/javascript"></script>
-
+    <script src="script.js"></script>
 </body>
 
 </html>

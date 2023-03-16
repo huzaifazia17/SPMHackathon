@@ -1,87 +1,203 @@
+// Search cocktail by name
+function searchCocktail() {
+    const searchQuery = document.getElementById("searchCocktail").value;
 
-//function for searching cocktail by name
-async function nameSearch() {
+    fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${searchQuery}`)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error("Failed to fetch cocktail");
+            }
+        })
+        .then(data => {
+            const result = document.getElementById("result");
+            result.innerHTML = "";
 
-    //get the value of the inputted name 
-    const name = document.getElementById('cocktailName').value;
-
-    //put the name inside the api link and fetch the response
-    const response = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${name}`);
-
-    //await the response and turn it into json
-    const data = await response.json();
-
-    //display the results using the data
-    displayResults(data);
-}
-
-//function for searching cocktail by id
-async function idSearch() {
-
-    //get the id from input box
-    const id = document.getElementById('cocktailId').value;
-
-    //put the id inside the api link and fetch the response
-    const response = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`);
-
-    //await the response and turn it into json
-    const data = await response.json();
-
-    //display the results using the data
-    displayResults(data);
-}
-
-//function for getting a random cocktail
-async function randomCocktail() {
-
-    //fetch a random cocktail and put in into response
-    const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php');
-
-    //await the response and turn it into json
-    const data = await response.json();
-
-    //display the results using the data
-    displayResults(data);
-}
-
-
-async function searchIngredientByName() {
-    const ingredientName = document.getElementById("ingredient-name").value;
-    const response = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?i=${ingredientName}`);
-    const data = await response.json();
-    const resultsList = document.getElementById("ingredient-results");
-
-
-}
-
-//function for displaying results of queries
-function displayResults(data) {
-
-    //set null
-    resultDiv.innerHTML = '';
-
-    //if the data.drinks object recieved is not empty
-    //then for each drink inside the object, display it onto screen
-    if (data.drinks) {
-        data.drinks.forEach(drink => {
-            const drinkDiv = document.createElement('div');
-            drinkDiv.innerHTML = `<h3>${drink.strDrink}</h3><img src="${drink.strDrinkThumb}" alt="${drink.strDrink}" width="100">`;
-            resultDiv.appendChild(drinkDiv);
+            if (data.drinks === null) {
+                result.innerHTML = "No cocktails found";
+            } else {
+                data.drinks.forEach(drink => {
+                    const drinkDiv = document.createElement("div");
+                    drinkDiv.innerHTML = `
+              <h3>${drink.strDrink}</h3>
+              <img src="${drink.strDrinkThumb}">
+              <p>${drink.strInstructions}</p>
+            `;
+                    result.appendChild(drinkDiv);
+                });
+            }
+        })
+        .catch(error => {
+            const result = document.getElementById("result");
+            result.innerHTML = `Error: ${error.message}`;
         });
-    } else {
-        //if no results found, print error
-        resultDiv.innerHTML = '<p>No results found.</p>';
-    }
-
-    if (data.ingredients) {
-        data.ingredients.forEach(ingredient => {
-            const li = document.createElement("li");
-            li.innerText = `${ingredient.strIngredient}: ${ingredient.strDescription || 'No description available'}`;
-            resultsList.appendChild(li);
-        });
-    } else {
-        const li = document.createElement("li");
-        li.innerText = 'No ingredients found';
-        resultsList.appendChild(li);
-    }
 }
+
+// Search ingredients by name
+function searchIngredient() {
+    const searchQuery = document.getElementById("searchIngredient").value;
+
+    fetch(`https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=${searchQuery}`)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error("Failed to fetch ingredients");
+            }
+        })
+        .then(data => {
+            const result = document.getElementById("result");
+            result.innerHTML = "";
+
+            if (data.ingredients === null) {
+                result.innerHTML = "No ingredients found";
+            } else {
+                data.ingredients.forEach(ingredient => {
+                    const ingredientDiv = document.createElement("div");
+                    ingredientDiv.innerHTML = `
+              <h3>${ingredient.strIngredient}</h3>
+              <img src="https://www.thecocktaildb.com/images/ingredients/${ingredient.strIngredient}-Small.png">
+            `;
+                    result.appendChild(ingredientDiv);
+                });
+            }
+        })
+        .catch(error => {
+            const result = document.getElementById("result");
+            result.innerHTML = `Error: ${error.message}`;
+        });
+}
+
+// Lookup full cocktail details by ID
+function lookupCocktail() {
+    const lookupId = document.getElementById("lookupCocktail").value;
+
+    fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${lookupId}`)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error("Failed to fetch cocktail details");
+            }
+        })
+        .then(data => {
+            const result = document.getElementById("result");
+            result.innerHTML = "";
+
+            if (data.drinks === null) {
+                result.innerHTML = "Cocktail not found";
+            } else {
+                const drink = data.drinks[0];
+                const drinkDiv = document.createElement("div");
+                drinkDiv.innerHTML = `
+            <h3>${drink.strDrink}</h3>
+            <img src="${drink.strDrinkThumb}">
+            <p>${drink.strInstructions}</p>
+            <h4>Ingredients</h4>
+          `;
+                result.appendChild(drinkDiv);
+
+                const ingredients = [];
+                for (let i = 1; i <= 15; i++) {
+                    if (drink[`strIngredient${i}`]) {
+                        ingredients.push(`${drink[`strIngredient${i}`]} - ${drink[`strMeasure${i}`]}`);
+                    }
+                }
+
+                const ingredientsList = document.createElement("ul");
+                ingredients.forEach(ingredient => {
+                    const ingredientItem = document.createElement("li");
+                    ingredientItem.innerText = ingredient;
+                    ingredientsList.appendChild(ingredientItem);
+                });
+                result.appendChild(ingredientsList);
+            }
+        })
+        .catch(error => {
+            const result = document.getElementById("result");
+            result.innerHTML = `Error: ${error.message}`;
+        });
+}
+
+// Lookup a random cocktail
+function randomCocktail() {
+    fetch("https://www.thecocktaildb.com/api/json/v1/1/random.php")
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error("Failed to fetch random cocktail");
+            }
+        })
+        .then(data => {
+            const result = document.getElementById("result");
+            result.innerHTML = "";
+
+            const drink = data.drinks[0];
+            const drinkDiv = document.createElement("div");
+            drinkDiv.innerHTML = `
+          <h3>${drink.strDrink}</h3>
+          <img src="${drink.strDrinkThumb}">
+          <p>${drink.strInstructions}</p>
+          <h4>Ingredients</h4>
+        `;
+            result.appendChild(drinkDiv);
+
+            const ingredients = [];
+            for (let i = 1; i <= 15; i++) {
+                if (drink[`strIngredient${i}`]) {
+                    ingredients.push(`${drink[`strIngredient${i}`]} - ${drink[`strMeasure${i}`]}`);
+                }
+            }
+
+            const ingredientsList = document.createElement("ul");
+            ingredients.forEach(ingredient => {
+                const ingredientItem = document.createElement("li");
+                ingredientItem.innerText = ingredient;
+                ingredientsList.appendChild(ingredientItem);
+            });
+            result.appendChild(ingredientsList);
+        })
+        .catch(error => {
+            const result = document.getElementById("result");
+            result.innerHTML = `Error: ${error.message}`;
+        });
+}
+
+// Search by ingredient
+function searchByIngredient() {
+    const searchQuery = document.getElementById("searchByIngredient").value;
+
+    fetch(`https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=${searchQuery}`)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error("Failed to fetch cocktails by ingredient");
+            }
+        })
+        .then(data => {
+            const result = document.getElementById("result");
+            result.innerHTML = "";
+
+            if (data.drinks === null) {
+                result.innerHTML = "No cocktails found";
+            } else {
+                data.drinks.forEach(drink => {
+                    const drinkDiv = document.createElement("div");
+                    drinkDiv.innerHTML = `
+              <h3>${drink.strDrink}</h3>
+              <img src="${drink.strDrinkThumb}">
+              <p>${drink.strInstructions}</p>
+            `;
+                    result.appendChild(drinkDiv);
+                });
+            }
+        })
+        .catch(error => {
+            const result = document.getElementById("result");
+            result.innerHTML = `Error: ${error.message}`;
+        });
+}
+
