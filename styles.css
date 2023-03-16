@@ -1,0 +1,12 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+input,
+button {
+    margin-top: 10px;
+}
+
+#result {
+    margin-top: 20px;
+}
